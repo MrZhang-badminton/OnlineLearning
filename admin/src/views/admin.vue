@@ -184,7 +184,7 @@
                   <ul class="dropdown-menu dropdown-navbar">
                     <li>
                       <a href="#" class="clearfix">
-                        <img src="assets/images/avatars/avatar.png" class="msg-photo" alt="Alex's Avatar" />
+                        <img src="assets/images/avatars/avatar.png" class="msg-photo" alt="Alex's Avatar"/>
                         <span class="msg-body">
 													<span class="msg-title">
 														<span class="blue">Alex:</span>
@@ -201,7 +201,7 @@
 
                     <li>
                       <a href="#" class="clearfix">
-                        <img src="assets/images/avatars/avatar3.png" class="msg-photo" alt="Susan's Avatar" />
+                        <img src="assets/images/avatars/avatar3.png" class="msg-photo" alt="Susan's Avatar"/>
                         <span class="msg-body">
 													<span class="msg-title">
 														<span class="blue">Susan:</span>
@@ -218,7 +218,7 @@
 
                     <li>
                       <a href="#" class="clearfix">
-                        <img src="assets/images/avatars/avatar4.png" class="msg-photo" alt="Bob's Avatar" />
+                        <img src="assets/images/avatars/avatar4.png" class="msg-photo" alt="Bob's Avatar"/>
                         <span class="msg-body">
 													<span class="msg-title">
 														<span class="blue">Bob:</span>
@@ -235,7 +235,7 @@
 
                     <li>
                       <a href="#" class="clearfix">
-                        <img src="assets/images/avatars/avatar2.png" class="msg-photo" alt="Kate's Avatar" />
+                        <img src="assets/images/avatars/avatar2.png" class="msg-photo" alt="Kate's Avatar"/>
                         <span class="msg-body">
 													<span class="msg-title">
 														<span class="blue">Kate:</span>
@@ -252,7 +252,7 @@
 
                     <li>
                       <a href="#" class="clearfix">
-                        <img src="assets/images/avatars/avatar5.png" class="msg-photo" alt="Fred's Avatar" />
+                        <img src="assets/images/avatars/avatar5.png" class="msg-photo" alt="Fred's Avatar"/>
                         <span class="msg-body">
 													<span class="msg-title">
 														<span class="blue">Fred:</span>
@@ -280,7 +280,7 @@
 
             <li class="light-blue dropdown-modal">
               <a data-toggle="dropdown" href="#" class="dropdown-toggle">
-                <img class="nav-user-photo" src="../../public/ace/assets/images/avatars/user.jpg" alt="Jason's Photo" />
+                <img class="nav-user-photo" src="../../public/ace/assets/images/avatars/user.jpg" alt="Jason's Photo"/>
                 <span class="user-info">
 									<small>Welcome,</small>
 									Jason
@@ -365,8 +365,8 @@
             <b class="arrow"></b>
           </li>
 
-<!--          系统管理-->
-<!--          加上了样 式class属性-->
+          <!--          系统管理-->
+          <!--          加上了样 式class属性-->
           <li class="">
             <a href="#" class="dropdown-toggle">
               <i class="menu-icon fa fa-list"></i>
@@ -398,7 +398,7 @@
             </ul>
           </li>
 
-<!--          业务管理-->
+          <!--          业务管理-->
           <li class="active open">
             <a href="#" class="dropdown-toggle">
               <i class="menu-icon fa fa-list"></i>
@@ -425,7 +425,8 @@
         </ul><!-- /.nav-list -->
 
         <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
-          <i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
+          <i id="sidebar-toggle-icon" class="ace-icon fa fa-angle-double-left ace-save-state"
+             data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
         </div>
       </div>
 
@@ -480,13 +481,28 @@
 <script>
 export default {
   name: "admin",
-  mounted:function (){
+  mounted: function () {
+    let _this = this;
     $("body").removeClass("login-layout light-login");
-    $("body").attr("class","no-skin");
+    $("body").attr("class", "no-skin");
     // console.log("admin");
+    // sidebar激活样式方法二
+    _this.activeSidebar(_this.$route.name.replace("/", "-") + "-sidebar");
   },
-  methods:{
-    login(){
+  watch: {
+    $route: {
+      handler: function (val, oldVal) {
+        // sidebar激活样式方法二
+        console.log("------->页面跳转：", val, oldVal);
+        let _this = this;
+        _this.$nextTick(function () {
+          _this.activeSidebar(_this.$route.name.replace("/", "-") + "-sidebar");
+        })
+      }
+    }
+  },
+  methods: {
+    login() {
       this.$router.push("/admin")
     },
 
