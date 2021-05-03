@@ -19,3 +19,6 @@
 //    }
 //
 //}
+
+
+////在GatewayApplication中设置了@bean
