@@ -10,11 +10,9 @@ import com.course.server.util.UuidUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mysql.cj.util.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service("ChapterService")
@@ -23,45 +21,59 @@ public class ChapterService {
 	@Resource
 	private ChapterMapper chapterMapper;
 
+	/**
+	 * 查询列表
+	 * @param pageDto
+	 */
 	public void list(PageDto pageDto) {
-		PageHelper.startPage(pageDto.getPage(),pageDto.getSize());
+		PageHelper.startPage(pageDto.getPage(), pageDto.getSize());
 		ChapterExample chapterExample = new ChapterExample();
 		List<Chapter> chapterList = chapterMapper.selectByExample(chapterExample);
 
 		PageInfo<Chapter> pageInfo = new PageInfo<>(chapterList);
 		pageDto.setTotal(pageInfo.getTotal());
 
-//		List<ChapterDto> chapterDtoList = new ArrayList<ChapterDto>();
-//		for (int i = 0, l = chapterList.size(); i < l; i++) {
-//			Chapter chapter = chapterList.get(i);
-//			ChapterDto chapterDto = new ChapterDto();
-//			BeanUtils.copyProperties(chapter,chapterDto);
-//			chapterDtoList.add(chapterDto);
-//		}
-
-		List<ChapterDto> chapterDtoList = CopyUtil.copyList(chapterList,ChapterDto.class);
+		List<ChapterDto> chapterDtoList = CopyUtil.copyList(chapterList, ChapterDto.class);
 		pageDto.setList(chapterDtoList);
 
 	}
 
+	/**
+	 * 插入或保存
+	 * @param chapterDto
+	 */
 	public void save(ChapterDto chapterDto) {
-		Chapter chapter = CopyUtil.copy(chapterDto,Chapter.class);
-		if(StringUtils.isNullOrEmpty(chapterDto.getId())){
+		Chapter chapter = CopyUtil.copy(chapterDto, Chapter.class);
+		if (StringUtils.isNullOrEmpty(chapterDto.getId())) {
 			this.insert(chapter);
 		} else {
 			this.update(chapter);
 		}
 	}
 
-	public void delete(String id){
+	/**
+	 * 删除
+	 * @param id
+	 */
+	public void delete(String id) {
 		chapterMapper.deleteByPrimaryKey(id);
 	}
 
+	/**
+	 * 插入
+	 *
+	 * @param chapter
+	 */
 	private void insert(Chapter chapter) {
 		chapter.setId(UuidUtil.getShortUuid());
 		chapterMapper.insert(chapter);
 	}
 
+	/**
+	 * 更新
+	 *
+	 * @param chapter
+	 */
 	private void update(Chapter chapter) {
 		chapterMapper.updateByPrimaryKey(chapter);
 	}
