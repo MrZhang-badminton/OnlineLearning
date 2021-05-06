@@ -19,17 +19,21 @@ public class ServerGenerator {
 	public static void main(String[] args) throws Exception {
 		String Domain = "Section";
 		String domain = "section";
+		String tableNameCn = "小节";
+		String module = MODULE;
 		Map<String, Object> map = new HashMap<>();
 		map.put("Domain", Domain);
 		map.put("domain", domain);
+		map.put("tableNameCn", tableNameCn);
+		map.put("module", module);
 
 		//生成service
 		FreemarkerUtil.initConfig("service.ftl");
-		FreemarkerUtil.generator(toServicePath + Domain +  "Service.java", map);
+		FreemarkerUtil.generator(toServicePath + Domain + "Service.java", map);
 
 		//生成controller
 		FreemarkerUtil.initConfig("controller.ftl");
-		FreemarkerUtil.generator(toControllerPath + Domain +  "Controller.java", map);
+		FreemarkerUtil.generator(toControllerPath + Domain + "Controller.java", map);
 
 
 	}
