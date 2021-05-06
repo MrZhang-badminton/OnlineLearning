@@ -10,9 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-/**
- * @author Gabriel
- */
+
 public class TestUtil {
 
     static String ftlPath = "generator/src/main/java/com/course/generator/test/";

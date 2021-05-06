@@ -23,9 +23,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Field;
 
-/**
- * @author Gabriel
- */
 @Aspect
 @Component
 public class LogAspect {
