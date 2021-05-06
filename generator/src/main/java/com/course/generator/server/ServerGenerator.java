@@ -23,7 +23,14 @@ public class ServerGenerator {
 		map.put("Domain", Domain);
 		map.put("domain", domain);
 
+		//生成service
 		FreemarkerUtil.initConfig("service.ftl");
 		FreemarkerUtil.generator(toServicePath + Domain +  "Service.java", map);
+
+		//生成controller
+		FreemarkerUtil.initConfig("controller.ftl");
+		FreemarkerUtil.generator(toControllerPath + Domain +  "Controller.java", map);
+
+
 	}
 }
