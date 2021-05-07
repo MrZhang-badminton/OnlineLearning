@@ -130,7 +130,7 @@
   import Pagination from "@/components/pagination";
 
   export default {
-    name: "section",
+    name: "business-section",
     components: {Pagination},
     data: function () {
       return {
