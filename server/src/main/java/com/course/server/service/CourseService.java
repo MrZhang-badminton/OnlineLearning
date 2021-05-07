@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Date;
 
 @Service("CourseService")
 public class CourseService {
@@ -28,6 +29,7 @@ public class CourseService {
 	public void list(PageDto pageDto) {
 		PageHelper.startPage(pageDto.getPage(), pageDto.getSize());
 		CourseExample courseExample = new CourseExample();
+        courseExample.setOrderByClause("sort asc");
 		List<Course> courseList = courseMapper.selectByExample(courseExample);
 
 		PageInfo<Course> pageInfo = new PageInfo<>(courseList);
@@ -65,6 +67,9 @@ public class CourseService {
 	 * @param course
 	 */
 	private void insert(Course course) {
+        Date now = new Date();
+        course.setCreatedAt(now);
+        course.setUpdatedAt(now);
 		course.setId(UuidUtil.getShortUuid());
 		courseMapper.insert(course);
 	}
@@ -75,6 +80,7 @@ public class CourseService {
 	 * @param course
 	 */
 	private void update(Course course) {
+        course.setUpdatedAt(new Date());
 		courseMapper.updateByPrimaryKey(course);
 	}
 }

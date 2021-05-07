@@ -7,7 +7,6 @@ import com.course.server.service.CourseService;
 import com.course.server.util.ValidatorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -25,7 +24,6 @@ public class CourseController {
 
 	/**
 	 * 列表查询
-	 *
 	 * @param pageDto
 	 * @return
 	 */
@@ -39,7 +37,6 @@ public class CourseController {
 
 	/**
 	 * 保存
-	 *
 	 * @param courseDto
 	 * @return
 	 */
@@ -47,7 +44,10 @@ public class CourseController {
 	public ResponseDto save(@RequestBody CourseDto courseDto) {
 
 		// 保存校验
-
+		ValidatorUtil.require(courseDto.getName(), "名称");
+		ValidatorUtil.length(courseDto.getName(), "名称", 1, 50);
+		ValidatorUtil.length(courseDto.getSummary(), "概述", 1, 2000);
+		ValidatorUtil.length(courseDto.getImage(), "封面", 1, 100);
 
 		ResponseDto responseDto = new ResponseDto();
 		courseService.save(courseDto);
@@ -57,7 +57,6 @@ public class CourseController {
 
 	/**
 	 * 删除
-	 *
 	 * @param id
 	 * @return
 	 */
