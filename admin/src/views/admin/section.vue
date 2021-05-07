@@ -36,7 +36,7 @@
         <td>{{section.chapterId}}</td>
         <td>{{section.video}}</td>
         <td>{{section.time}}</td>
-        <td>{{CHARGE | optionKV(section.charge)}}</td>
+        <td>{{SECTION_CHARGE | optionKV(section.charge)}}</td>
         <td>{{section.sort}}</td>
         <td>{{section.vod}}</td>
 
@@ -98,7 +98,7 @@
                 <label class="col-sm-2 control-label">收费</label>
                 <div class="col-sm-10">
                   <select v-model="section.charge" class="form-control">
-                    <option v-for="o in CHARGE" v-bind:value="o.key">{{o.value}}</option>
+                    <option v-for="o in SECTION_CHARGE" v-bind:value="o.key">{{o.value}}</option>
                   </select>
                 </div>
               </div>
@@ -136,7 +136,7 @@
       return {
         section: {},
         sections: [],
-        CHARGE:[{key:"C",value:"收费"},{key:"F",value:"免费"}],
+        SECTION_CHARGE:SECTION_CHARGE,
       }
     },
     mounted: function () {
