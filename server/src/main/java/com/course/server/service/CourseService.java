@@ -1,7 +1,10 @@
 package com.course.server.service;
 
+import com.course.server.domain.Category;
 import com.course.server.domain.Course;
+import com.course.server.domain.CourseCategory;
 import com.course.server.domain.CourseExample;
+import com.course.server.dto.CategoryDto;
 import com.course.server.dto.CourseDto;
 import com.course.server.dto.PageDto;
 import com.course.server.mapper.CourseMapper;
@@ -30,14 +33,18 @@ public class CourseService {
 	@Resource
 	private MyCourseMapper myCourseMapper;
 
+	@Resource
+	private CourseCategoryService courseCategoryService;
+
 	/**
 	 * 查询列表
+	 *
 	 * @param pageDto
 	 */
 	public void list(PageDto pageDto) {
 		PageHelper.startPage(pageDto.getPage(), pageDto.getSize());
 		CourseExample courseExample = new CourseExample();
-        courseExample.setOrderByClause("sort asc");
+		courseExample.setOrderByClause("sort asc");
 		List<Course> courseList = courseMapper.selectByExample(courseExample);
 
 		PageInfo<Course> pageInfo = new PageInfo<>(courseList);
@@ -50,6 +57,7 @@ public class CourseService {
 
 	/**
 	 * 插入或保存
+	 *
 	 * @param courseDto
 	 */
 	public void save(CourseDto courseDto) {
@@ -59,10 +67,15 @@ public class CourseService {
 		} else {
 			this.update(course);
 		}
+
+		//批量保存课程分类
+		courseCategoryService.saveBatch(courseDto.getId(), courseDto.getCategorys());
+
 	}
 
 	/**
 	 * 删除
+	 *
 	 * @param id
 	 */
 	public void delete(String id) {
@@ -75,9 +88,9 @@ public class CourseService {
 	 * @param course
 	 */
 	private void insert(Course course) {
-        Date now = new Date();
-        course.setCreatedAt(now);
-        course.setUpdatedAt(now);
+		Date now = new Date();
+		course.setCreatedAt(now);
+		course.setUpdatedAt(now);
 		course.setId(UuidUtil.getShortUuid());
 		courseMapper.insert(course);
 	}
@@ -88,16 +101,18 @@ public class CourseService {
 	 * @param course
 	 */
 	private void update(Course course) {
-        course.setUpdatedAt(new Date());
+		course.setUpdatedAt(new Date());
 		courseMapper.updateByPrimaryKey(course);
 	}
 
 	/**
 	 * 更新课程时长
+	 *
 	 * @param courseId
 	 */
-	public void updateTime(String courseId){
-		LOG.info("更新课程时长：{}",courseId);
+	public void updateTime(String courseId) {
+		LOG.info("更新课程时长：{}", courseId);
 		myCourseMapper.updateTime(courseId);
 	}
+
 }

@@ -188,8 +188,7 @@ values ('00000702', '00000700', 'redis', 702);
 insert into `category` (id, parent, name, sort)
 values ('00000703', '00000700', 'mongodb', 703);
 
-#
-课程分类
+#课程分类
 drop table if exists `course_category`;
 create table `course_category`
 (
@@ -269,8 +268,7 @@ create table `user`
     unique key `login_name_unique` (`login_name`)
 ) engine=innodb default charset=utf8mb4 comment='用户';
 
-#
-初始test/test
+#初始test/test
 insert into `user` (id, login_name, name, password) values ('10000000', 'test', '测试', 'e70e2222a9d67c4f2eae107533359aa4');
 
 -- 资源
@@ -374,12 +372,10 @@ create table `member`
     unique key `mobile_unique` (`mobile`)
 ) engine=innodb default charset=utf8mb4 comment='会员';
 
-#
-初始test/test
+#初始test/test
 insert into `member` (id, mobile, password, name, photo, register_time) values ('00000000', '12345678901', 'e70e2222a9d67c4f2eae107533359aa4', '测试', null, now());
 
-#
-短信验证码
+#短信验证码
 drop table if exists `sms`;
 create table `sms`
 (
