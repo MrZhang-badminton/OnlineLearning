@@ -3,9 +3,9 @@
     <div class="row">
       <div class="col-md-6">
         <p>
-          <button v-on:click="add()" class="btn btn-white btn-default btn-round">
+          <button v-on:click="add1()" class="btn btn-white btn-default btn-round">
             <i class="ace-icon fa fa-edit"></i>
-            新增
+            新增一级
           </button>
           &nbsp;
           <button v-on:click="all()" class="btn btn-white btn-default btn-round">
@@ -24,7 +24,8 @@
           </thead>
 
           <tbody>
-          <tr v-for="category in level1" v-on:click="onClickLevel1(category)" v-bind:class="{'active':category.id===active.id}">
+          <tr v-for="category in level1" v-on:click="onClickLevel1(category)"
+              v-bind:class="{'active':category.id===active.id}">
             <td>{{ category.id }}</td>
             <td>{{ category.name }}</td>
             <td>{{ category.sort }}</td>
@@ -46,9 +47,9 @@
 
       <div class="col-md-6">
         <p>
-          <button v-on:click="add()" class="btn btn-white btn-default btn-round">
+          <button v-on:click="add2()" class="btn btn-white btn-default btn-round">
             <i class="ace-icon fa fa-edit"></i>
-            新增
+            新增二级
           </button>
         </p>
         <table id="level2-table" class="table  table-bordered table-hover">
@@ -94,9 +95,9 @@
           <div class="modal-body">
             <form class="form-horizontal">
               <div class="form-group">
-                <label class="col-sm-2 control-label">父id</label>
+                <label class="col-sm-2 control-label">父分类</label>
                 <div class="col-sm-10">
-                  <input v-model="category.parent" class="form-control">
+                  <p class="form-control-static">{{ active.name || "无" }}</p>
                 </div>
               </div>
               <div class="form-group">
@@ -131,9 +132,9 @@ export default {
     return {
       category: {},
       categorys: [],
-      level1:[],
-      level2:[],
-      active:{}
+      level1: [],
+      level2: [],
+      active: {}
     }
   },
   mounted: function () {
@@ -145,12 +146,31 @@ export default {
   },
   methods: {
     /**
-     * 增加
+     * 新增一级
      */
-    add() {
+    add1() {
       let _this = this;
-      _this.category = {};
+      _this.active = {};
+      _this.level2 = [];
+      _this.category = {
+        parent:"00000000"
+      };
       $("#form-modal").modal("show");
+    },
+
+    /**
+     * 新增二级
+     */
+    add2() {
+      let _this = this;
+      if (Tool.isEmpty(_this.active)) {
+        Toast.warning("请先点击一级分类");
+        return;
+      }
+      _this.category = {
+        parent: _this.active.id
+      };
+      $(".modal").modal("show");
     },
 
     /**
@@ -172,7 +192,7 @@ export default {
       Loading.show();
       _this.$ajax.post(process.env.VUE_APP_SERVER + '/business/admin/category/list', {
         page: page,
-        size: _this.$refs.pagination.size,pagi
+        size: _this.$refs.pagination.size, pagi
       }).then((response) => {
         Loading.hide();
         // console.log("查询分类列表结果：", response);
@@ -197,12 +217,12 @@ export default {
         _this.level1 = [];
         for (let i = 0; i < _this.categorys.length; i++) {
           let c = _this.categorys[i];
-          if(c.parent === '00000000'){
+          if (c.parent === '00000000') {
             _this.level1.push(c);
             for (let j = 0; j < _this.categorys.length; j++) {
               let child = _this.categorys[j];
-              if(child.parent === c.id){
-                if(Tool.isEmpty(c.children)){
+              if (child.parent === c.id) {
+                if (Tool.isEmpty(c.children)) {
                   c.children = [];
                 }
                 c.children.push(child);
@@ -263,16 +283,16 @@ export default {
       });
     },
 
-    onClickLevel1(category){
+    onClickLevel1(category) {
       let _this = this;
-      _this.active=category;
+      _this.active = category;
       _this.level2 = category.children;
     }
   }
 }
 </script>
 <style scoped>
-.active td{
+.active td {
   background-color: #d6e9c6 !important;
 }
 

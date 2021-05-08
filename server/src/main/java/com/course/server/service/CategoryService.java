@@ -11,6 +11,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mysql.cj.util.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -66,12 +67,24 @@ public class CategoryService {
 	}
 
 	/**
-	 * 删除
+	 * 删除一级分类
 	 *
 	 * @param id
 	 */
+	@Transactional
 	public void delete(String id) {
+		deleteChildren(id);
 		categoryMapper.deleteByPrimaryKey(id);
+	}
+
+	public void deleteChildren(String id){
+		Category category = categoryMapper.selectByPrimaryKey(id);
+		if("000000000".equals(category.getParent())){
+			// 如果是一级分类，需要删除其下的二级分类
+			CategoryExample example = new CategoryExample();
+			example.createCriteria().andParentEqualTo(category.getId());
+			categoryMapper.deleteByExample(example);
+		}
 	}
 
 	/**
