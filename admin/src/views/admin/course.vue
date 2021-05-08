@@ -480,7 +480,7 @@ export default {
     openSortModal(course) {
       let _this = this;
       _this.sort = {
-        id: course.id,
+        id: course.id ,
         oldSort: course.sort,
         newSort: course.sort
       };
