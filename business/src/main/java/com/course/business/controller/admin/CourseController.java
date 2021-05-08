@@ -1,9 +1,6 @@
 package com.course.business.controller.admin;
 
-import com.course.server.dto.CourseCategoryDto;
-import com.course.server.dto.CourseDto;
-import com.course.server.dto.PageDto;
-import com.course.server.dto.ResponseDto;
+import com.course.server.dto.*;
 import com.course.server.service.CourseCategoryService;
 import com.course.server.service.CourseService;
 import com.course.server.util.ValidatorUtil;
@@ -30,6 +27,7 @@ public class CourseController {
 
 	/**
 	 * 列表查询
+	 *
 	 * @param pageDto
 	 * @return
 	 */
@@ -43,6 +41,7 @@ public class CourseController {
 
 	/**
 	 * 保存
+	 *
 	 * @param courseDto
 	 * @return
 	 */
@@ -63,6 +62,7 @@ public class CourseController {
 
 	/**
 	 * 删除
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -75,13 +75,29 @@ public class CourseController {
 
 	/**
 	 * 查找课程下所有分类
+	 *
 	 * @param courseId
 	 */
 	@PostMapping("/list-category/{courseId}")
 	public ResponseDto listCategory(@PathVariable(value = "courseId") String courseId) {
 		ResponseDto responseDto = new ResponseDto();
-		List<CourseCategoryDto> dtoList =  courseCategoryService.listByCourse(courseId);
+		List<CourseCategoryDto> dtoList = courseCategoryService.listByCourse(courseId);
 		responseDto.setContent(dtoList);
+		return responseDto;
+	}
+
+	@GetMapping("/find-content/{id}")
+	public ResponseDto findContent(@PathVariable String id) {
+		ResponseDto responseDto = new ResponseDto();
+		CourseContentDto contentDto = courseService.findContent(id);
+		responseDto.setContent(contentDto);
+		return responseDto;
+	}
+
+	@PostMapping("/save-content")
+	public ResponseDto saveContent(@RequestBody CourseContentDto contentDto) {
+		ResponseDto responseDto = new ResponseDto();
+		courseService.saveContent(contentDto);
 		return responseDto;
 	}
 }
