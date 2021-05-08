@@ -23,12 +23,24 @@ public class CategoryService {
 
 	/**
 	 * 查询列表
+	 */
+	public List<CategoryDto> all() {
+		CategoryExample categoryExample = new CategoryExample();
+		categoryExample.setOrderByClause("sort asc");
+		List<Category> categoryList = categoryMapper.selectByExample(categoryExample);
+		List<CategoryDto> categoryDtoList = CopyUtil.copyList(categoryList, CategoryDto.class);
+		return categoryDtoList;
+	}
+
+	/**
+	 * 查询列表
+	 *
 	 * @param pageDto
 	 */
 	public void list(PageDto pageDto) {
 		PageHelper.startPage(pageDto.getPage(), pageDto.getSize());
 		CategoryExample categoryExample = new CategoryExample();
-        categoryExample.setOrderByClause("sort asc");
+		categoryExample.setOrderByClause("sort asc");
 		List<Category> categoryList = categoryMapper.selectByExample(categoryExample);
 
 		PageInfo<Category> pageInfo = new PageInfo<>(categoryList);
@@ -41,6 +53,7 @@ public class CategoryService {
 
 	/**
 	 * 插入或保存
+	 *
 	 * @param categoryDto
 	 */
 	public void save(CategoryDto categoryDto) {
@@ -54,6 +67,7 @@ public class CategoryService {
 
 	/**
 	 * 删除
+	 *
 	 * @param id
 	 */
 	public void delete(String id) {
