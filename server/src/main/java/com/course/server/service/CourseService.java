@@ -17,6 +17,7 @@ import com.mysql.cj.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -60,6 +61,7 @@ public class CourseService {
 	 *
 	 * @param courseDto
 	 */
+	@Transactional
 	public void save(CourseDto courseDto) {
 		Course course = CopyUtil.copy(courseDto, Course.class);
 		if (StringUtils.isNullOrEmpty(courseDto.getId())) {
