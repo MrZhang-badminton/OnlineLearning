@@ -80,7 +80,7 @@ public class CourseController {
 	@PostMapping("/list-category/{courseId}")
 	public ResponseDto listCategory(@PathVariable(value = "courseId") String courseId) {
 		ResponseDto responseDto = new ResponseDto();
-		List<CourseCategoryDto> dtoList = courseCategoryService.listByCourse(courseId);
+		List<CourseCategoryDto> dtoList =  courseCategoryService.listByCourse(courseId);
 		responseDto.setContent(dtoList);
 		return responseDto;
 	}
