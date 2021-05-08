@@ -4,6 +4,7 @@ import com.course.server.domain.Section;
 import com.course.server.domain.SectionExample;
 import com.course.server.dto.SectionDto;
 import com.course.server.dto.PageDto;
+import com.course.server.dto.SectionPageDto;
 import com.course.server.mapper.SectionMapper;
 import com.course.server.util.CopyUtil;
 import com.course.server.util.UuidUtil;
@@ -24,24 +25,30 @@ public class SectionService {
 
 	/**
 	 * 查询列表
-	 * @param pageDto
+	 *
+	 * @param sectionPageDto
 	 */
-	public void list(PageDto pageDto) {
-		PageHelper.startPage(pageDto.getPage(), pageDto.getSize());
+	public void list(SectionPageDto sectionPageDto) {
+		PageHelper.startPage(sectionPageDto.getPage(), sectionPageDto.getSize());
 		SectionExample sectionExample = new SectionExample();
-        sectionExample.setOrderByClause("sort asc");
+		SectionExample.Criteria criteria = sectionExample.createCriteria();
+		if (!StringUtils.isNullOrEmpty(sectionPageDto.getCourseId())) {
+			criteria.andCourseIdEqualTo(sectionPageDto.getCourseId());
+		}
+		if (!StringUtils.isNullOrEmpty(sectionPageDto.getChapterId())) {
+			criteria.andChapterIdEqualTo(sectionPageDto.getChapterId());
+		}
+		sectionExample.setOrderByClause("sort asc");
 		List<Section> sectionList = sectionMapper.selectByExample(sectionExample);
-
 		PageInfo<Section> pageInfo = new PageInfo<>(sectionList);
-		pageDto.setTotal(pageInfo.getTotal());
-
+		sectionPageDto.setTotal(pageInfo.getTotal());
 		List<SectionDto> sectionDtoList = CopyUtil.copyList(sectionList, SectionDto.class);
-		pageDto.setList(sectionDtoList);
-
+		sectionPageDto.setList(sectionDtoList);
 	}
 
 	/**
 	 * 插入或保存
+	 *
 	 * @param sectionDto
 	 */
 	public void save(SectionDto sectionDto) {
@@ -55,6 +62,7 @@ public class SectionService {
 
 	/**
 	 * 删除
+	 *
 	 * @param id
 	 */
 	public void delete(String id) {
@@ -67,9 +75,9 @@ public class SectionService {
 	 * @param section
 	 */
 	private void insert(Section section) {
-        Date now = new Date();
-        section.setCreatedAt(now);
-        section.setUpdatedAt(now);
+		Date now = new Date();
+		section.setCreatedAt(now);
+		section.setUpdatedAt(now);
 		section.setId(UuidUtil.getShortUuid());
 		sectionMapper.insert(section);
 	}
@@ -80,7 +88,7 @@ public class SectionService {
 	 * @param section
 	 */
 	private void update(Section section) {
-        section.setUpdatedAt(new Date());
+		section.setUpdatedAt(new Date());
 		sectionMapper.updateByPrimaryKey(section);
 	}
 }
