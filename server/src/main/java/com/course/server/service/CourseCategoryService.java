@@ -101,6 +101,7 @@ public class CourseCategoryService {
 			courseCategory.setCategoryId(categoryDto.getId());
 			insert(courseCategory);
 		}
+
 	}
 
 	/**
