@@ -4,6 +4,7 @@ import Login from "./views/login"
 import Admin from "./views/admin"
 import Welcome from "./views/admin/welcome"
 import Category from "./views/admin/category"
+import Teacher from "./views/admin/teacher"
 import Course from "./views/admin/course"
 import Chapter from "./views/admin/chapter"
 import Section from "./views/admin/section"
@@ -44,6 +45,10 @@ export default new Router({
             path: "business/category",
             name: "business/category",
             component: Category,
+        }, {
+            path: "business/teacher",
+            name: "business/teacher",
+            component: Teacher,
         }]
     }]
 
