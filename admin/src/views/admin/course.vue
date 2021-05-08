@@ -56,9 +56,9 @@
               <span class="badge badge-info">{{course.time | formatSecond()}}</span>
             </p>
             <p>
-<!--              <button v-on:click="toChapter(course)" class="btn btn-white btn-xs btn-info btn-round">-->
-<!--                大章-->
-<!--              </button>&nbsp;-->
+              <button v-on:click="toChapter(course)" class="btn btn-white btn-xs btn-info btn-round">
+                大章
+              </button>&nbsp;
 <!--              <button v-on:click="toContent(course)" class="btn btn-white btn-xs btn-info btn-round">-->
 <!--                内容-->
 <!--              </button>&nbsp;-->
@@ -332,7 +332,15 @@
           })
         });
 
-      }
+      },
+      /**
+       * 点击【大章】
+       */
+      toChapter(course) {
+        let _this = this;
+        SessionStorage.set(SESSION_KEY_COURSE, course);
+        _this.$router.push("/business/chapter");
+      },
     }
   }
 </script>
