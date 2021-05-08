@@ -23,6 +23,9 @@ public class SectionService {
 	@Resource
 	private SectionMapper sectionMapper;
 
+	@Resource
+	private CourseService courseService;
+
 	/**
 	 * 查询列表
 	 *
@@ -58,6 +61,7 @@ public class SectionService {
 		} else {
 			this.update(section);
 		}
+		courseService.updateTime(sectionDto.getCourseId());
 	}
 
 	/**
