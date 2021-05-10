@@ -62,9 +62,26 @@ export default {
       let end = Math.min(start + shardSize, file.size);  //当前分片结束位置1，20~40，35
       let fileShard = file.slice(start, end);  //从文件中截取当前的分片数据
 
+      let size = file.size;
+      let shardTotal = Math.ceil(size / shardSize);
+
+      let key = hex_md5(file);
+      let key10 = parseInt(key, 16);
+      let key62 = Tool._10to62(key10);
+      console.log(key, key10, key62);
+
       // key："file"必须和后端controller参数名一致
-      formData.append('file', fileShard);
+      formData.append('shard', fileShard);
+      formData.append('shardIndex', shardIndex);
+      formData.append('shardSize', shardSize);
+      formData.append('shardTotal', shardTotal);
+      // formData.append('file', fileShard);
       formData.append('use', _this.use);
+      formData.append('name', file.name);
+      formData.append('suffix', suffix);
+      formData.append('size', size);
+      formData.append('key', key62);
+
       Loading.show();
       _this.$ajax.post(process.env.VUE_APP_SERVER + '/file/admin/upload', formData).then((response) => {
         Loading.hide();
