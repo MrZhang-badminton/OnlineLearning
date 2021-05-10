@@ -5,7 +5,7 @@ SESSION_KEY_LOGIN_USER = "SESSION_KEY_LOGIN_USER"; // 登录信息
 SessionStorage = {
     get: function (key) {
         let v = sessionStorage.getItem(key);
-        if (v && typeof(v) !== "undefined" && v !== "undefined") {
+        if (v && typeof (v) !== "undefined" && v !== "undefined") {
             return JSON.parse(v);
         }
     },

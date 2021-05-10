@@ -3,7 +3,7 @@ LOCAL_KEY_REMEMBER_USER = "LOCAL_KEY_REMEMBER_USER"; // 记住我
 LocalStorage = {
     get: function (key) {
         let v = localStorage.getItem(key);
-        if (v && typeof(v) !== "undefined" && v !== "undefined") {
+        if (v && typeof (v) !== "undefined" && v !== "undefined") {
             return JSON.parse(v);
         }
     },
