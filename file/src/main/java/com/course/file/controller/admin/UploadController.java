@@ -24,7 +24,7 @@ public class UploadController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(UploadController.class);
 
-//	private static final String BUSINESS_NAME = "文件上传";
+	//	private static final String BUSINESS_NAME = "文件上传";
 	public static final String BUSINESS_NAME = "文件上传";
 
 	@Value("${file.domain}")
@@ -37,7 +37,7 @@ public class UploadController {
 	private FileService fileService;
 
 	@RequestMapping("/upload")
-	public ResponseDto upload(@RequestBody FileDto fileDto) throws IOException {
+	public ResponseDto upload(@RequestBody FileDto fileDto) throws Exception {
 		LOG.info("上传文件开始");
 		String use = fileDto.getUse();
 		String key = fileDto.getKey();
@@ -60,9 +60,15 @@ public class UploadController {
 				.append(key)
 				.append(".")
 				.append(suffix)
+				.toString();
+
+		String localPath = new StringBuffer(path)
 				.append(".")
-				.append(fileDto.getShardIndex()).toString();
-		String fullPath = FILE_PATH + path;
+				.append(fileDto.getShardIndex())
+				.toString();
+
+
+		String fullPath = FILE_PATH + localPath;
 		File dest = new File(fullPath);
 		shard.transferTo(dest);
 		LOG.info(dest.getAbsolutePath());
@@ -75,27 +81,31 @@ public class UploadController {
 		fileDto.setPath(FILE_DOMAIN + path);
 		responseDto.setContent(fileDto);
 
+		if (fileDto.getShardIndex() == fileDto.getShardTotal()) {
+			this.merge(fileDto);
+		}
+
 		return responseDto;
 	}
 
-	@GetMapping("/merge")
-	public ResponseDto merge(FileDto fileDto) throws Exception {
-		File newFile = new File(FILE_PATH + "/course/test123.mp4");
+	public void merge(FileDto fileDto) throws Exception {
+		LOG.info("合并分片开始");
+		String path = fileDto.getPath();
+		path = path.replace(FILE_DOMAIN, "");
+		File newFile = new File(FILE_PATH + path);
+		Integer shardTotal = fileDto.getShardTotal();
 		FileOutputStream outputStream = new FileOutputStream(newFile, true);
 		FileInputStream fileInputStream = null;
 		byte[] byt = new byte[10 * 1024 * 1024];
 		int len;
 
 		try {
-			fileInputStream = new FileInputStream(new File(FILE_PATH + "course/mZvcNKmi.blob"));
-			while ((len = fileInputStream.read(byt)) != -1) {
-				outputStream.write(byt, 0, len);
-			}
 
-			//读取第二个分片
-			fileInputStream = new FileInputStream(new File(FILE_PATH + "/course/Fb4cbKnX.blob"));
-			while ((len = fileInputStream.read(byt)) != -1) {
-				outputStream.write(byt, 0, len);
+			for (int i = 0; i < shardTotal; i++) {
+				fileInputStream = new FileInputStream(new File(FILE_PATH + path + "." + (i + 1)));
+				while ((len = fileInputStream.read(byt)) != -1) {
+					outputStream.write(byt, 0, len);
+				}
 			}
 		} catch (IOException e) {
 			LOG.info("分片合并异常", e);
@@ -109,9 +119,8 @@ public class UploadController {
 			} catch (Exception e) {
 				LOG.error("IO流关闭", e);
 			}
-			ResponseDto responseDto = new ResponseDto();
-			return responseDto;
 		}
+		LOG.info("合并分片结束");
 	}
 
 //	public void merge(FileDto fileDto) throws Exception {
