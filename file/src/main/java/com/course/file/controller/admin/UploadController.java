@@ -24,7 +24,8 @@ public class UploadController {
 
 	private static final Logger LOG = LoggerFactory.getLogger(UploadController.class);
 
-	private static final String BUSINESS_NAME = "文件上传";
+//	private static final String BUSINESS_NAME = "文件上传";
+	public static final String BUSINESS_NAME = "文件上传";
 
 	@Value("${file.domain}")
 	private String FILE_DOMAIN;
