@@ -38,6 +38,15 @@ export default {
       let formData = new window.FormData();
       let file = _this.$refs.file.files[0];
 
+      console.log(JSON.stringify(file));
+
+
+      let key = hex_md5(file.name + file.size + file.type);
+      let key10 = parseInt(key, 16);
+      let key62 = Tool._10to62(key10);
+      console.log(key, key10, key62);
+      console.log(hex_md5(Array()));
+
       // 判断文件格式
       let suffixs = _this.suffixs;
       let fileName = file.name;
@@ -61,11 +70,6 @@ export default {
 
       let size = file.size;
       let shardTotal = Math.ceil(size / shardSize);
-
-      let key = hex_md5(file);
-      let key10 = parseInt(key, 16);
-      let key62 = Tool._10to62(key10);
-      console.log(key, key10, key62);
 
       let param = {
         'shardIndex': shardIndex,
