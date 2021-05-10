@@ -21,11 +21,11 @@
         <th>后缀</th>
         <th>大小</th>
         <th>用途</th>
-        <th>已上传分片</th>
-        <th>分片大小</th>
-        <th>分片总数</th>
-        <th>文件标识</th>
-        <th>vod</th>
+<!--        <th>已上传分片</th>-->
+<!--        <th>分片大小</th>-->
+<!--        <th>分片总数</th>-->
+<!--        <th>文件标识</th>-->
+<!--        <th>vod</th>-->
         <th>操作</th>
       </tr>
       </thead>
@@ -38,11 +38,11 @@
         <td>{{file.suffix}}</td>
         <td>{{file.size}}</td>
         <td>{{FILE_USE | optionKV(file.use)}}</td>
-        <td>{{file.shardIndex}}</td>
-        <td>{{file.shardSize}}</td>
-        <td>{{file.shardTotal}}</td>
-        <td>{{file.key}}</td>
-        <td>{{file.vod}}</td>
+<!--        <td>{{file.shardIndex}}</td>-->
+<!--        <td>{{file.shardSize}}</td>-->
+<!--        <td>{{file.shardTotal}}</td>-->
+<!--        <td>{{file.key}}</td>-->
+<!--        <td>{{file.vod}}</td>-->
 
       <td>
         <div class="hidden-sm hidden-xs btn-group">

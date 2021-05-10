@@ -283,7 +283,9 @@ export default {
     afterUpload(resp) {
       let _this = this;
       let image = resp.content;
+      console.log("image:————————" + image );
       _this.teacher.image = image;
+      console.log("teacher.image:" + _this.teacher.image);
     },
 
   }
