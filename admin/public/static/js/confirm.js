@@ -1,6 +1,6 @@
 Confirm = {
 
-    show:function(message, callback) {
+    show: function (message, callback) {
         Swal.fire({
             title: '确？',
             text: message,
@@ -11,7 +11,7 @@ Confirm = {
             confirmButtonText: '确认',
         }).then((result) => {
             if (result.isConfirmed) {
-                if(callback){
+                if (callback) {
                     callback();
                 }
             }

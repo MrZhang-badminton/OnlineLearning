@@ -59,9 +59,6 @@
               <button v-on:click="toChapter(course)" class="btn btn-white btn-xs btn-info btn-round">
                 大章
               </button>&nbsp;
-              <button v-on:click="openSortModal(course)" class="btn btn-white btn-xs btn-info btn-round">
-                排序
-              </button>&nbsp;
               <button v-on:click="editContent(course)" class="btn btn-white btn-xs btn-info btn-round">
                 内容
               </button>&nbsp;
@@ -219,12 +216,12 @@
                   <input v-model="course.sort" class="form-control">
                 </div>
               </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label">讲师</label>
-                <div class="col-sm-10">
-                  <input v-model="course.teacherId" class="form-control">
-                </div>
-              </div>
+<!--              <div class="form-group">-->
+<!--                <label class="col-sm-2 control-label">讲师</label>-->
+<!--                <div class="col-sm-10">-->
+<!--                  <input v-model="course.teacherId" class="form-control">-->
+<!--                </div>-->
+<!--              </div>-->
             </form>
           </div>
           <div class="modal-footer">

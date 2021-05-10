@@ -12,6 +12,8 @@
         <module>generator</module>
         <module>generator</module>
         <module>generator</module>
+        <module>file</module>
+        <module>file</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
