@@ -11,6 +11,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mysql.cj.util.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -45,10 +46,12 @@ public class FileService {
 	 */
 	public void save(FileDto fileDto) {
 		File file = CopyUtil.copy(fileDto, File.class);
-		if (StringUtils.isNullOrEmpty(fileDto.getId())) {
+		File fileDb = selectByKey(fileDto.getKey());
+		if (fileDb == null) {
 			this.insert(file);
 		} else {
-			this.update(file);
+			fileDb.setShardIndex(fileDto.getShardIndex());
+			this.update(fileDb);
 		}
 	}
 
@@ -81,5 +84,22 @@ public class FileService {
 	private void update(File file) {
         file.setUpdatedAt(new Date());
 		fileMapper.updateByPrimaryKey(file);
+	}
+
+
+	/**
+	 * 根据key查询分片信息
+	 * @param key
+	 * @return
+	 */
+	public File selectByKey(String key) {
+		FileExample example = new FileExample();
+		example.createCriteria().andKeyEqualTo(key);
+		List<File> fileList = fileMapper.selectByExample(example);
+		if (CollectionUtils.isEmpty(fileList)) {
+			return null;
+		} else {
+			return fileList.get(0);
+		}
 	}
 }
