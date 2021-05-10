@@ -61,7 +61,7 @@ export default {
   mounted: function () {
     let _this = this;
     //初试设置每一页大小
-    this.$refs.pagination.size = 5;
+    this.$refs.pagination.size = 10;
     //初试展示第一页
     _this.list(1);
     // sidebar激活样式方法一
