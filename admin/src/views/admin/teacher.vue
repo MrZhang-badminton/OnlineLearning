@@ -127,6 +127,7 @@
                   <file v-bind:id="'image-upload'"
                         v-bind:text="'上传头像'"
                         v-bind:suffixs="['jpg', 'jpeg', 'png']"
+                        v-bind:use="FILE_USE.TEACHER.key"
                         v-bind:after-upload="afterUpload"></file>
                   <div v-show="teacher.image" class="row">
                     <div class="col-md-4">
@@ -176,6 +177,9 @@ export default {
     return {
       teacher: {},
       teachers: [],
+      //前者是组件的全局变量，后者是js全局变量
+      //上面取的时候取的应该是前者，组件的全局变量
+      FILE_USE: FILE_USE,
     }
   },
   mounted: function () {
@@ -283,7 +287,7 @@ export default {
     afterUpload(resp) {
       let _this = this;
       let image = resp.content;
-      console.log("image:————————" + image );
+      console.log("image:————————" + image);
       _this.teacher.image = image;
       console.log("teacher.image:" + _this.teacher.image);
     },
