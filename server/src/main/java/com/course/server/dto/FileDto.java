@@ -68,6 +68,11 @@ public class FileDto {
     private String key;
 
     /**
+     * base64
+     */
+    private String shard;
+
+    /**
      * vod|阿里云vod
      */
     private String vod;
@@ -176,28 +181,31 @@ public class FileDto {
         this.vod = vod;
     }
 
+    public String getShard() {
+        return shard;
+    }
+
+    public void setShard(String shard) {
+        this.shard = shard;
+    }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", path=").append(path);
-        sb.append(", name=").append(name);
-        sb.append(", suffix=").append(suffix);
-        sb.append(", size=").append(size);
-        sb.append(", use=").append(use);
-        sb.append(", createdAt=").append(createdAt);
-        sb.append(", updatedAt=").append(updatedAt);
-        sb.append(", shardIndex=").append(shardIndex);
-        sb.append(", shardSize=").append(shardSize);
-        sb.append(", shardTotal=").append(shardTotal);
-        sb.append(", key=").append(key);
-        sb.append(", vod=").append(vod);
-        sb.append("]");
-        return sb.toString();
+        return "FileDto{" +
+                "id='" + id + '\'' +
+                ", path='" + path + '\'' +
+                ", name='" + name + '\'' +
+                ", suffix='" + suffix + '\'' +
+                ", size=" + size +
+                ", use='" + use + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", shardIndex=" + shardIndex +
+                ", shardSize=" + shardSize +
+                ", shardTotal=" + shardTotal +
+                ", key='" + key + '\'' +
+                ", shard='" + shard + '\'' +
+                ", vod='" + vod + '\'' +
+                '}';
     }
-
 }
