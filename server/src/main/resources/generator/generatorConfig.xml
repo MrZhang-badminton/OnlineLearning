@@ -25,6 +25,9 @@
                         connectionURL="jdbc:mysql://localhost:3306/coursesystem?characterEncodingUTF8&amp;autoReconnect=true&amp;erverTimezone=UTC"
                         userId="root"
                         password="123456">
+<!--            大坑，如果不加下面这行，生成user表的时候会生成mysql库里面的user表-->
+<!--            所以为了防止生成其他库的里面同名表，要加上以下数据-->
+            <property name="nullCatalogMeansCurrent" value="true"/>
         </jdbcConnection>
 
         <!-- 注意mac电脑下，要用"/"，window下用"\" -->
@@ -49,6 +52,8 @@
         <!--        <table tableName="course_category" domainObjectName="CourseCategory"/>-->
         <!--        <table tableName="course_content" domainObjectName="CourseContent"/>-->
         <!--        <table tableName="teacher" domainObjectName="Teacher"/>-->
-        <table tableName="file" domainObjectName="File"/>
+        <!--        <table tableName="file" domainObjectName="File"/>-->
+        <table tableName="user" domainObjectName="User"/>
+
     </context>
 </generatorConfiguration>

@@ -18,7 +18,7 @@ import java.util.*;
  * 这样才能将数字转化为字符串1000而不是1,000
  */
 public class ServerGenerator {
-	static String MODULE = "file";
+	static String MODULE = "system";
 	static String toDtoPath = "server/src/main/java/com/course/server/dto/";
 	static String toServicePath = "server/src/main/java/com/course/server/service/";
 	static String toControllerPath = MODULE + "/src/main/java/com/course/" + MODULE + "/controller/admin/";
