@@ -163,7 +163,7 @@ public class VodUtil {
         try {
             // 初始化VOD客户端并获取上传地址和凭证
             DefaultAcsClient vodClient = initVodClient(accessKeyId, accessKeySecret);
-            String fileName = "test.mp4";
+            String fileName = "videa111.MP4";
             CreateUploadVideoResponse createUploadVideoResponse = createUploadVideo(vodClient, fileName);
             // 执行成功会返回VideoId、UploadAddress和UploadAuth
             String videoId = createUploadVideoResponse.getVideoId();
