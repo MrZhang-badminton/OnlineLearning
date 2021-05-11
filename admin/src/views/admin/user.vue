@@ -25,21 +25,21 @@
 
       <tbody>
       <tr v-for="user in users">
-        <td>{{user.id}}</td>
-        <td>{{user.loginName}}</td>
-        <td>{{user.name}}</td>
-        <td>{{user.password}}</td>
+        <td>{{ user.id }}</td>
+        <td>{{ user.loginName }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.password }}</td>
 
-      <td>
-        <div class="hidden-sm hidden-xs btn-group">
-          <button v-on:click="edit(user)" class="btn btn-xs btn-info">
-            <i class="ace-icon fa fa-pencil bigger-120"></i>
-          </button>
-          <button v-on:click="del(user.id)" class="btn btn-xs btn-danger">
-            <i class="ace-icon fa fa-trash-o bigger-120"></i>
-          </button>
-        </div>
-      </td>
+        <td>
+          <div class="hidden-sm hidden-xs btn-group">
+            <button v-on:click="edit(user)" class="btn btn-xs btn-info">
+              <i class="ace-icon fa fa-pencil bigger-120"></i>
+            </button>
+            <button v-on:click="del(user.id)" class="btn btn-xs btn-danger">
+              <i class="ace-icon fa fa-trash-o bigger-120"></i>
+            </button>
+          </div>
+        </td>
       </tr>
       </tbody>
     </table>
@@ -57,7 +57,7 @@
               <div class="form-group">
                 <label class="col-sm-2 control-label">登陆名</label>
                 <div class="col-sm-10">
-                  <input v-model="user.loginName" class="form-control">
+                  <input v-model="user.loginName" v-bind:disabled="user.id" class="form-control">
                 </div>
               </div>
               <div class="form-group">
@@ -85,116 +85,116 @@
 </template>
 
 <script>
-  import Pagination from "@/components/pagination";
+import Pagination from "@/components/pagination";
 
-  export default {
-    name: "system-user",
-    components: {Pagination},
-    data: function () {
-      return {
-        user: {},
-        users: [],
-      }
-    },
-    mounted: function () {
+export default {
+  name: "system-user",
+  components: {Pagination},
+  data: function () {
+    return {
+      user: {},
+      users: [],
+    }
+  },
+  mounted: function () {
+    let _this = this;
+    //初试设置每一页大小
+    this.$refs.pagination.size = 5;
+    //初试展示第一页
+    _this.list(1);
+    // sidebar激活样式方法一
+    // this.$parent.activeSidebar("system-user-sidebar")
+  },
+  methods: {
+    /**
+     * 增加
+     */
+    add() {
       let _this = this;
-      //初试设置每一页大小
-      this.$refs.pagination.size = 5;
-      //初试展示第一页
-      _this.list(1);
-      // sidebar激活样式方法一
-      // this.$parent.activeSidebar("system-user-sidebar")
+      _this.user = {};
+      $("#form-modal").modal("show");
     },
-    methods: {
-      /**
-       * 增加
-       */
-      add() {
-        let _this = this;
-        _this.user = {};
-        $("#form-modal").modal("show");
-      },
 
-      /**
-       * 编辑
-       * @param user
-       */
-      edit(user) {
-        let _this = this;
-        _this.user = $.extend({}, user);
-        $("#form-modal").modal("show");
-      },
+    /**
+     * 编辑
+     * @param user
+     */
+    edit(user) {
+      let _this = this;
+      _this.user = $.extend({}, user);
+      $("#form-modal").modal("show");
+    },
 
-      /**
-       * 列表查询
-       * @param page
-       */
-      list(page) {
-        let _this = this;
-        Loading.show();
-        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/user/list', {
-          page: page,
-          size: _this.$refs.pagination.size,
-        }).then((response) => {
-          Loading.hide();
-          // console.log("查询用户列表结果：", response);
-          let resp = response.data;
-          _this.users = resp.content.list;
-          _this.$refs.pagination.render(page, resp.content.total);
-        })
-      },
+    /**
+     * 列表查询
+     * @param page
+     */
+    list(page) {
+      let _this = this;
+      Loading.show();
+      _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/user/list', {
+        page: page,
+        size: _this.$refs.pagination.size,
+      }).then((response) => {
+        Loading.hide();
+        // console.log("查询用户列表结果：", response);
+        let resp = response.data;
+        _this.users = resp.content.list;
+        _this.$refs.pagination.render(page, resp.content.total);
+      })
+    },
 
-      /**
-       * 点击【保存】
-       * @param page
-       */
-      save() {
-        let _this = this;
+    /**
+     * 点击【保存】
+     * @param page
+     */
+    save() {
+      let _this = this;
 
-        // 保存校验
-        if (1 != 1
+      // 保存校验
+      if (1 != 1
           || !Validator.require(_this.user.loginName, "登陆名")
           || !Validator.length(_this.user.loginName, "登陆名", 1, 50)
           || !Validator.length(_this.user.name, "昵称", 1, 50)
           || !Validator.require(_this.user.password, "密码")
-        ) {
-          return;
+      ) {
+        return;
+      }
+      Loading.show();
+      _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/user/save', _this.user).then((response) => {
+        Loading.hide();
+        // console.log("保存用户列表结果：", response);
+        let resp = response.data;
+        if (resp.success) {
+          $("#form-modal").modal("hide");
+          _this.list(1);
+          Toast.success("保存成功!");
+        } else {
+          Toast.warning(resp.message);
         }
+      })
+    },
+
+    /**
+     * 点击删除
+     * @param id
+     */
+    del(id) {
+      let _this = this;
+      Confirm.show("删除用户后不可恢复，确认删除？", function () {
         Loading.show();
-        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/user/save', _this.user).then((response) => {
+        _this.$ajax.delete(process.env.VUE_APP_SERVER + '/system/admin/user/delete/' + id).then((response) => {
           Loading.hide();
-          // console.log("保存用户列表结果：", response);
+          // console.log("删除用户列表结果：", response);
           let resp = response.data;
           if (resp.success) {
-            $("#form-modal").modal("hide");
             _this.list(1);
-            Toast.success("保存成功!");
-          }else {
-            Toast.warning(resp.message);
+            Toast.success("删除成功!");
           }
         })
-      },
+      });
 
-      /**
-       * 点击删除
-       * @param id
-       */
-      del(id) {
-        let _this = this;
-        Confirm.show("删除用户后不可恢复，确认删除？", function () {
-          Loading.show();
-          _this.$ajax.delete(process.env.VUE_APP_SERVER + '/system/admin/user/delete/' + id).then((response) => {
-            Loading.hide();
-            // console.log("删除用户列表结果：", response);
-            let resp = response.data;
-            if (resp.success) {
-              _this.list(1);
-              Toast.success("删除成功!");
-            }
-          })
-        });
-
-      }
     }
   }
+}
 </script>

@@ -4,6 +4,8 @@ import com.course.server.domain.User;
 import com.course.server.domain.UserExample;
 import com.course.server.dto.UserDto;
 import com.course.server.dto.PageDto;
+import com.course.server.exception.BusinessException;
+import com.course.server.exception.BusinessExceptionCode;
 import com.course.server.mapper.UserMapper;
 import com.course.server.util.CopyUtil;
 import com.course.server.util.UuidUtil;
@@ -11,8 +13,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.mysql.cj.util.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 
 @Service("UserService")
@@ -23,6 +27,7 @@ public class UserService {
 
 	/**
 	 * 查询列表
+	 *
 	 * @param pageDto
 	 */
 	public void list(PageDto pageDto) {
@@ -40,6 +45,7 @@ public class UserService {
 
 	/**
 	 * 插入或保存
+	 *
 	 * @param userDto
 	 */
 	public void save(UserDto userDto) {
@@ -53,6 +59,7 @@ public class UserService {
 
 	/**
 	 * 删除
+	 *
 	 * @param id
 	 */
 	public void delete(String id) {
@@ -66,6 +73,10 @@ public class UserService {
 	 */
 	private void insert(User user) {
 		user.setId(UuidUtil.getShortUuid());
+		User userDb = this.SelectByLoginName(user.getLoginName());
+		if(userDb != null){
+			throw new BusinessException(BusinessExceptionCode.USER_LOGIN_NAME_EXIST);
+		}
 		userMapper.insert(user);
 	}
 
@@ -76,5 +87,22 @@ public class UserService {
 	 */
 	private void update(User user) {
 		userMapper.updateByPrimaryKey(user);
+	}
+
+	/**
+	 * 根据用户名查询用户信息
+	 * @param loginName
+	 * @return
+	 */
+	public User SelectByLoginName(String loginName) {
+		UserExample userExample = new UserExample();
+		userExample.createCriteria().andLoginNameEqualTo(loginName);
+		List<User> userList = userMapper.selectByExample(userExample);
+		if (CollectionUtils.isEmpty(userList)) {
+			return null;
+		} else {
+			return userList.get(0);
+		}
+
 	}
 }
