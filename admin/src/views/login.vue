@@ -42,6 +42,19 @@
 														</span>
                         </label>
 
+                        <label class="block clearfix">
+                          <span class="block input-icon input-icon-right">
+                            <div class="input-group">
+                             <input type="text" class="form-control" placeholder="验证码">
+
+                              <!-- <input v-model="user.imageCode" type="text" class="form-control" placeholder="验证码">-->
+                              <span class="input-group-addon" id="basic-addon2">
+                                <img v-on:click="loadImageCode()" id="image-code" alt="验证码"/>
+                              </span>
+                            </div>
+                          </span>
+                        </label>
+
                         <div class="space"></div>
 
                         <div class="clearfix">
@@ -128,9 +141,12 @@ export default {
     // console.log("login");
     // 从缓存中获取记住的用户名密码，如果获取不到，说明上一次没有勾选"记住我"
     let rememberUser = LocalStorage.get(LOCAL_KEY_REMEMBER_USER);
-    if(rememberUser){
+    if (rememberUser) {
       _this.user = rememberUser;
     }
+
+    // 初始加载一次验证码图片
+    _this.loadImageCode();
   },
   methods: {
     login() {
@@ -140,9 +156,9 @@ export default {
 
       // 如果密码是从缓存中取出来的，则不需要重新加密
       let md5 = hex_md5(_this.user.password);
-      let rememberUser = LocalStorage.get(LOCAL_KEY_REMEMBER_USER)||{};
+      let rememberUser = LocalStorage.get(LOCAL_KEY_REMEMBER_USER) || {};
 
-      if(md5 !== rememberUser.md5){
+      if (md5 !== rememberUser.md5) {
         _this.user.password = hex_md5(_this.user.password + KEY);
       }
 
@@ -166,7 +182,7 @@ export default {
             LocalStorage.set(LOCAL_KEY_REMEMBER_USER, {
               loginName: loginUser.loginName,
               password: _this.user.password,
-              md5:md5
+              md5: md5
             });
           } else {
             //没有勾选"记住我"时，要把本地缓存清空，否则按照mounted的逻辑
@@ -180,6 +196,19 @@ export default {
       });
     },
 
+    loadImageCode: function () {
+      let _this = this;
+      _this.imageCodeToken = Tool.uuid(8);
+      $('#image-code').attr("src", process.env.VUE_APP_SERVER + '/system/admin/kaptcha/image-code'
+          + _this.imageCodeToken);
+    }
+
   }
 }
 </script>
+
+<style scoped>
+.input-group-addon {
+  padding: 0;
+}
+</style>
