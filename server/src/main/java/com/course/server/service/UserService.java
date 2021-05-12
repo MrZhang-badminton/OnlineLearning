@@ -3,8 +3,8 @@ package com.course.server.service;
 import com.course.server.domain.User;
 import com.course.server.domain.UserExample;
 import com.course.server.dto.LoginUserDto;
-import com.course.server.dto.UserDto;
 import com.course.server.dto.PageDto;
+import com.course.server.dto.UserDto;
 import com.course.server.exception.BusinessException;
 import com.course.server.exception.BusinessExceptionCode;
 import com.course.server.mapper.UserMapper;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Collections;
 import java.util.List;
 
 @Service("UserService")

@@ -45,9 +45,8 @@
                         <label class="block clearfix">
                           <span class="block input-icon input-icon-right">
                             <div class="input-group">
-                             <input type="text" class="form-control" placeholder="验证码">
-
-                              <!-- <input v-model="user.imageCode" type="text" class="form-control" placeholder="验证码">-->
+<!--                             <input type="text" class="form-control" placeholder="验证码">-->
+                               <input v-model="user.imageCode" type="text" class="form-control" placeholder="验证码">
                               <span class="input-group-addon" id="basic-addon2">
                                 <img v-on:click="loadImageCode()" id="image-code" alt="验证码"/>
                               </span>
@@ -132,6 +131,7 @@ export default {
     return {
       user: {},
       remember: true,
+      imageCodeToken: "",
     }
   },
   mounted: function () {
@@ -162,8 +162,10 @@ export default {
         _this.user.password = hex_md5(_this.user.password + KEY);
       }
 
+      _this.user.imageCodeToken = _this.imageCodeToken;
 
       Loading.show();
+
 
       _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/user/login', _this.user).then((response) => {
         Loading.hide();
@@ -191,7 +193,11 @@ export default {
           }
           _this.$router.push("/welcome");
         } else {
+          let s = sessionStorage.getItem("keykey");
+          console.log(s);
           Toast.warning(resp.message);
+          _this.user.password = "";
+          _this.loadImageCode();
         }
       });
     },
@@ -199,8 +205,9 @@ export default {
     loadImageCode: function () {
       let _this = this;
       _this.imageCodeToken = Tool.uuid(8);
-      $('#image-code').attr("src", process.env.VUE_APP_SERVER + '/system/admin/kaptcha/image-code'
+      $('#image-code').attr("src", process.env.VUE_APP_SERVER + '/system/admin/kaptcha/image-code/'
           + _this.imageCodeToken);
+
     }
 
   }

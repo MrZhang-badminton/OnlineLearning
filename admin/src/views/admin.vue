@@ -570,7 +570,8 @@ export default {
       let _this = this;
 
       Loading.show();
-      _this.$ajax.get(process.env.VUE_APP_SERVER + '/system/admin/user/logout').then((response) => {
+      _this.$ajax.get(process.env.VUE_APP_SERVER + '/system/admin/user/logout/'
+      + _this.loginUser.token).then((response) => {
         Loading.hide();
         // console.log("保存用户列表结果：", response);
         let resp = response.data;
