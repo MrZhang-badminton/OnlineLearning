@@ -136,8 +136,9 @@ export default {
         // console.log("保存用户列表结果：", response);
         let resp = response.data;
         if (resp.success) {
-          console.log(resp.content);
-          _this.$router.push("/welcome")
+          console.log("登录成功 : ",resp.content);
+          Tool.setLoginUser(resp.content);
+          _this.$router.push("/welcome");
         } else {
           Toast.warning(resp.message);
         }
