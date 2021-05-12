@@ -46,7 +46,7 @@
 
                         <div class="clearfix">
                           <label class="inline">
-                            <input type="checkbox" class="ace"/>
+                            <input v-model="remember" type="checkbox" class="ace"/>
                             <span class="lbl"> 记住我</span>
                           </label>
 
@@ -118,26 +118,46 @@ export default {
   data: function () {
     return {
       user: {},
+      remember: true,
     }
   },
   mounted: function () {
+    let _this = this;
     $("body").removeClass("no-skin");
     $("body").attr("class", "login-layout light-login");
     // console.log("login");
+    // 从缓存中获取记住的用户名密码，如果获取不到，说明上一次没有勾选"记住我"
+    let rememberUser = LocalStorage.get(LOCAL_KEY_REMEMBER_USER);
+    if(rememberUser){
+      _this.user = rememberUser;
+    }
   },
   methods: {
     login() {
       let _this = this;
-
+      let passwordShow = _this.user.password;
       _this.user.password = hex_md5(_this.user.password + KEY);
+
       Loading.show();
+
       _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/user/login', _this.user).then((response) => {
         Loading.hide();
-        // console.log("保存用户列表结果：", response);
         let resp = response.data;
         if (resp.success) {
-          console.log("登录成功 : ",resp.content);
-          Tool.setLoginUser(resp.content);
+          console.log("登录成功 : ", resp.content);
+          let loginUser = resp.content;
+          Tool.setLoginUser(loginUser);
+
+          // 判断记住我
+          if (_this.remember) {
+            // 如果勾选记住我，则将用户名密码保存到本地缓存，这里需要保存密码明文
+            LocalStorage.set(LOCAL_KEY_REMEMBER_USER, {
+              loginName: loginUser.loginName,
+              password: passwordShow
+            });
+          } else {
+            LocalStorage.set(LOCAL_KEY_REMEMBER_USER, null);
+          }
           _this.$router.push("/welcome");
         } else {
           Toast.warning(resp.message);
