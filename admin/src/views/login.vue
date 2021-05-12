@@ -151,8 +151,12 @@ export default {
   methods: {
     login() {
       let _this = this;
-      // 将明文存储到缓存中
-      // let passwordShow = _this.user.password;
+
+      //验证码不能为空
+      if(_this.user == null || _this.user.imageCode == null){
+        Toast.warning("验证码为空");
+        return;
+      }
 
       // 如果密码是从缓存中取出来的，则不需要重新加密
       let md5 = hex_md5(_this.user.password);
