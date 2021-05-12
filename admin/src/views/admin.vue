@@ -289,23 +289,23 @@
                 <li>
                   <a href="#">
                     <i class="ace-icon fa fa-cog"></i>
-                    Settings
+                    系统设置
                   </a>
                 </li>
 
                 <li>
                   <a href="profile.html">
                     <i class="ace-icon fa fa-user"></i>
-                    Profile
+                    个人信息
                   </a>
                 </li>
 
                 <li class="divider"></li>
 
                 <li>
-                  <a href="#">
+                  <a v-on:click="logout()" href="#">
                     <i class="ace-icon fa fa-power-off"></i>
-                    Logout
+                    退出登录
                   </a>
                 </li>
               </ul>
@@ -355,7 +355,7 @@
           <li class="" id="welcome-sidebar">
             <router-link to="/welcome">
               <i class="menu-icon fa fa-tachometer"></i>
-              <span class="menu-text"> 欢迎{{loginUser.name}} </span>
+              <span class="menu-text"> 欢迎{{ loginUser.name }} </span>
             </router-link>
 
             <b class="arrow"></b>
@@ -528,7 +528,7 @@ export default {
     // sidebar激活样式方法二
     _this.activeSidebar(_this.$route.name.replace("/", "-") + "-sidebar");
     $.getScript('/ace/assets/js/ace.min.js');
-    _this.loginUser =Tool.getLoginUser();
+    _this.loginUser = Tool.getLoginUser();
   },
   watch: {
     $route: {
@@ -565,6 +565,24 @@ export default {
         parentLi.addClass("open active");
       }
     },
+
+    logout() {
+      let _this = this;
+
+      Loading.show();
+      _this.$ajax.get(process.env.VUE_APP_SERVER + '/system/admin/user/logout').then((response) => {
+        Loading.hide();
+        // console.log("保存用户列表结果：", response);
+        let resp = response.data;
+        if (resp.success) {
+          Tool.setLoginUser(null);
+          _this.$router.push("/login");
+        } else {
+          Toast.warning(resp.message);
+        }
+      });
+    },
+
 
   }
 }
