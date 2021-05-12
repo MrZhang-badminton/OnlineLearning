@@ -7,6 +7,7 @@ import com.course.generator.util.FreemarkerUtil;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.springframework.beans.BeanUtils;
 
 import java.io.File;
 import java.util.*;
@@ -25,7 +26,6 @@ public class ServerGenerator {
 	static String generatorConfigPath = "server/src/main/resources/generator/generatorConfig.xml";
 
 	public static void main(String[] args) throws Exception {
-
 
 		// 只生成配置文件中的第一个table节点
 		File file = new File(generatorConfigPath);
