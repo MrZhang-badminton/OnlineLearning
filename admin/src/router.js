@@ -12,6 +12,7 @@ import File from "./views/admin/file"
 import Test from "./views/test"
 import User from "./views/admin/user"
 import Resource from "./views/admin/resource"
+import Role from "./views/admin/role"
 
 Vue.use(Router)
 
@@ -63,6 +64,10 @@ export default new Router({
             name: "business/teacher",
             component: Teacher,
         }, {
+            path: "file/file",
+            name: "file/file",
+            component: File,
+        }, {
             path: "system/user",
             name: "system/user",
             component: User,
@@ -71,10 +76,10 @@ export default new Router({
             name: "system/resource",
             component: Resource,
         }, {
-            path: "file/file",
-            name: "file/file",
-            component: File,
-        }]
+            path: "system/role",
+            name: "system/role",
+            component: Role,
+        },]
     }]
 
 })

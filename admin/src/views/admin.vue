@@ -375,20 +375,27 @@
 
             <ul class="submenu">
               <li class="" id="system-user-sidebar">
-                <a href="/system/user">
+                <router-link to="/system/user">
                   <i class="menu-icon fa fa-caret-right"></i>
                   用户管理
-                </a>
+                </router-link>
 
                 <b class="arrow"></b>
               </li>
 
               <li class="" id="system-resource-sidebar">
-                <a href="/system/resource">
+                <router-link to="/system/resource">
                   <i class="menu-icon fa fa-caret-right"></i>
                   资源管理
-                </a>
+                </router-link>
+                <b class="arrow"></b>
+              </li>
 
+              <li class="" id="system-role-sidebar">
+                <router-link to="/system/role">
+                  <i class="menu-icon fa fa-caret-right"></i>
+                  角色管理
+                </router-link>
                 <b class="arrow"></b>
               </li>
             </ul>
