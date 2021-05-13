@@ -24,6 +24,7 @@ public class RoleController {
 
 	/**
 	 * 列表查询
+	 *
 	 * @param pageDto
 	 * @return
 	 */
@@ -37,6 +38,7 @@ public class RoleController {
 
 	/**
 	 * 保存
+	 *
 	 * @param roleDto
 	 * @return
 	 */
@@ -57,6 +59,7 @@ public class RoleController {
 
 	/**
 	 * 删除
+	 *
 	 * @param id
 	 * @return
 	 */
@@ -64,6 +67,19 @@ public class RoleController {
 	public ResponseDto delete(@PathVariable String id) {
 		ResponseDto responseDto = new ResponseDto();
 		roleService.delete(id);
+		return responseDto;
+	}
+
+	/**
+	 * 保存资源
+	 * @param roleDto
+	 */
+	@PostMapping("/save-resource")
+	public ResponseDto saveResource(@RequestBody RoleDto roleDto) {
+		LOG.info("保存角色资源关联开始");
+		ResponseDto<RoleDto> responseDto = new ResponseDto<>();
+		roleService.saveResource(roleDto);
+		responseDto.setContent(roleDto);
 		return responseDto;
 	}
 }
