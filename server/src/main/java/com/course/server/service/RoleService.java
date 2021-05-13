@@ -16,6 +16,7 @@ import com.mysql.cj.util.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service("RoleService")
@@ -32,6 +33,7 @@ public class RoleService {
 
 	/**
 	 * 查询列表
+	 *
 	 * @param pageDto
 	 */
 	public void list(PageDto pageDto) {
@@ -49,6 +51,7 @@ public class RoleService {
 
 	/**
 	 * 插入或保存
+	 *
 	 * @param roleDto
 	 */
 	public void save(RoleDto roleDto) {
@@ -62,6 +65,7 @@ public class RoleService {
 
 	/**
 	 * 删除
+	 *
 	 * @param id
 	 */
 	public void delete(String id) {
@@ -106,6 +110,22 @@ public class RoleService {
 			roleResource.setResourceId(resourceIds.get(i));
 			roleResourceMapper.insert(roleResource);
 		}
+	}
+
+	/**
+	 * 按角色加载资源
+	 *
+	 * @param roleId
+	 */
+	public List<String> listResource(String roleId) {
+		RoleResourceExample example = new RoleResourceExample();
+		example.createCriteria().andRoleIdEqualTo(roleId);
+		List<RoleResource> roleResourceList = roleResourceMapper.selectByExample(example);
+		List<String> resourceIdList = new ArrayList<>();
+		for (int i = 0, l = roleResourceList.size(); i < l; i++) {
+			resourceIdList.add(roleResourceList.get(i).getResourceId());
+		}
+		return resourceIdList;
 	}
 
 }
