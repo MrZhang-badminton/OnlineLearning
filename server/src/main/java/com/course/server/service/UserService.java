@@ -147,9 +147,9 @@ public class UserService {
 			if (user.getPassword().equals(userDto.getPassword())) {
 				//登录成功
 				LoginUserDto loginUserDto = CopyUtil.copy(user, LoginUserDto.class);
-				//为登录用户杜宇权限
+				//为登录用户读取权限
 				setAuth(loginUserDto);
-				return CopyUtil.copy(user, LoginUserDto.class);
+				return loginUserDto;
 			} else {
 				LOG.info("密码不对，输入密码:{}，数据库密码:{}", userDto.getPassword(), user.getPassword());
 				throw new BusinessException(BusinessExceptionCode.LOGIN_USER_ERROR);
