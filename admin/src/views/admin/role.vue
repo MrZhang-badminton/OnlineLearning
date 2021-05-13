@@ -24,20 +24,23 @@
 
       <tbody>
       <tr v-for="role in roles">
-        <td>{{role.id}}</td>
-        <td>{{role.name}}</td>
-        <td>{{role.desc}}</td>
+        <td>{{ role.id }}</td>
+        <td>{{ role.name }}</td>
+        <td>{{ role.desc }}</td>
 
-      <td>
-        <div class="hidden-sm hidden-xs btn-group">
-          <button v-on:click="edit(role)" class="btn btn-xs btn-info">
-            <i class="ace-icon fa fa-pencil bigger-120"></i>
-          </button>
-          <button v-on:click="del(role.id)" class="btn btn-xs btn-danger">
-            <i class="ace-icon fa fa-trash-o bigger-120"></i>
-          </button>
-        </div>
-      </td>
+        <td>
+          <div class="hidden-sm hidden-xs btn-group">
+            <button v-on:click="editResource(role)" class="btn btn-xs btn-info">
+              <i class="ace-icon fa fa-list bigger-120"></i>
+            </button>
+            <button v-on:click="edit(role)" class="btn btn-xs btn-info">
+              <i class="ace-icon fa fa-pencil bigger-120"></i>
+            </button>
+            <button v-on:click="del(role.id)" class="btn btn-xs btn-danger">
+              <i class="ace-icon fa fa-trash-o bigger-120"></i>
+            </button>
+          </div>
+        </td>
       </tr>
       </tbody>
     </table>
@@ -73,120 +76,196 @@
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+
+    <!-- 角色资源关联配置 -->
+    <div id="resource-modal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">角色资源关联配置</h4>
+          </div>
+          <div class="modal-body">
+            <ul id="tree" class="ztree"></ul>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-white btn-default btn-round" data-dismiss="modal">
+              <i class="ace-icon fa fa-times"></i>
+              关闭
+            </button>
+            <button type="button" class="btn btn-white btn-info btn-round" v-on:click="saveResource()">
+              <i class="ace-icon fa fa-plus blue"></i>
+              保存
+            </button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
   </div>
 </template>
 
 <script>
-  import Pagination from "@/components/pagination";
+import Pagination from "@/components/pagination";
 
-  export default {
-    name: "system-role",
-    components: {Pagination},
-    data: function () {
-      return {
-        role: {},
-        roles: [],
-      }
-    },
-    mounted: function () {
+export default {
+  name: "system-role",
+  components: {Pagination},
+  data: function () {
+    return {
+      role: {},
+      roles: [],
+      resources: [],
+      zTree: {},
+    }
+  },
+  mounted: function () {
+    let _this = this;
+    //初试设置每一页大小
+    this.$refs.pagination.size = 5;
+    //初试展示第一页
+    _this.list(1);
+    // sidebar激活样式方法一
+    // this.$parent.activeSidebar("system-role-sidebar")
+  },
+  methods: {
+    /**
+     * 增加
+     */
+    add() {
       let _this = this;
-      //初试设置每一页大小
-      this.$refs.pagination.size = 5;
-      //初试展示第一页
-      _this.list(1);
-      // sidebar激活样式方法一
-      // this.$parent.activeSidebar("system-role-sidebar")
+      _this.role = {};
+      $("#form-modal").modal("show");
     },
-    methods: {
-      /**
-       * 增加
-       */
-      add() {
-        let _this = this;
-        _this.role = {};
-        $("#form-modal").modal("show");
-      },
 
-      /**
-       * 编辑
-       * @param role
-       */
-      edit(role) {
-        let _this = this;
-        _this.role = $.extend({}, role);
-        $("#form-modal").modal("show");
-      },
+    /**
+     * 编辑
+     * @param role
+     */
+    edit(role) {
+      let _this = this;
+      _this.role = $.extend({}, role);
+      $("#form-modal").modal("show");
+    },
 
-      /**
-       * 列表查询
-       * @param page
-       */
-      list(page) {
-        let _this = this;
-        Loading.show();
-        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/role/list', {
-          page: page,
-          size: _this.$refs.pagination.size,
-        }).then((response) => {
-          Loading.hide();
-          // console.log("查询角色列表结果：", response);
-          let resp = response.data;
-          _this.roles = resp.content.list;
-          _this.$refs.pagination.render(page, resp.content.total);
-        })
-      },
+    /**
+     * 列表查询
+     * @param page
+     */
+    list(page) {
+      let _this = this;
+      Loading.show();
+      _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/role/list', {
+        page: page,
+        size: _this.$refs.pagination.size,
+      }).then((response) => {
+        Loading.hide();
+        // console.log("查询角色列表结果：", response);
+        let resp = response.data;
+        _this.roles = resp.content.list;
+        _this.$refs.pagination.render(page, resp.content.total);
+      })
+    },
 
-      /**
-       * 点击【保存】
-       * @param page
-       */
-      save() {
-        let _this = this;
+    /**
+     * 点击【保存】
+     * @param page
+     */
+    save() {
+      let _this = this;
 
-        // 保存校验
-        if (1 != 1
+      // 保存校验
+      if (1 != 1
           || !Validator.require(_this.role.name, "角色")
           || !Validator.length(_this.role.name, "角色", 1, 50)
           || !Validator.require(_this.role.desc, "描述")
           || !Validator.length(_this.role.desc, "描述", 1, 100)
-        ) {
-          return;
+      ) {
+        return;
+      }
+      Loading.show();
+      _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/role/save', _this.role).then((response) => {
+        Loading.hide();
+        // console.log("保存角色列表结果：", response);
+        let resp = response.data;
+        if (resp.success) {
+          $("#form-modal").modal("hide");
+          _this.list(1);
+          Toast.success("保存成功!");
+        } else {
+          Toast.warning(resp.message);
         }
+      })
+    },
+
+    /**
+     * 点击删除
+     * @param id
+     */
+    del(id) {
+      let _this = this;
+      Confirm.show("删除角色后不可恢复，确认删除？", function () {
         Loading.show();
-        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/role/save', _this.role).then((response) => {
+        _this.$ajax.delete(process.env.VUE_APP_SERVER + '/system/admin/role/delete/' + id).then((response) => {
           Loading.hide();
-          // console.log("保存角色列表结果：", response);
+          // console.log("删除角色列表结果：", response);
           let resp = response.data;
           if (resp.success) {
-            $("#form-modal").modal("hide");
             _this.list(1);
-            Toast.success("保存成功!");
-          }else {
-            Toast.warning(resp.message);
+            Toast.success("删除成功!");
           }
         })
-      },
+      });
+    },
+    /**
+     * 点击【编辑】
+     */
+    editResource(role) {
+      let _this = this;
+      _this.role = $.extend({}, role);
+      _this.loadResource();
+      $("#resource-modal").modal("show");
+    },
 
-      /**
-       * 点击删除
-       * @param id
-       */
-      del(id) {
-        let _this = this;
-        Confirm.show("删除角色后不可恢复，确认删除？", function () {
-          Loading.show();
-          _this.$ajax.delete(process.env.VUE_APP_SERVER + '/system/admin/role/delete/' + id).then((response) => {
-            Loading.hide();
-            // console.log("删除角色列表结果：", response);
-            let resp = response.data;
-            if (resp.success) {
-              _this.list(1);
-              Toast.success("删除成功!");
-            }
-          })
-        });
+    /**
+     * 加载资源树
+     */
+    loadResource() {
+      let _this = this;
+      Loading.show();
+      _this.$ajax.get(process.env.VUE_APP_SERVER + '/system/admin/resource/load-tree').then((res) => {
+        Loading.hide();
+        let response = res.data;
+        _this.resources = response.content;
+        // 初始化树
+        _this.initTree();
+        // _this.listRoleResource();
+      })
+    },
 
-      }
-    }
+    /**
+     * 初始资源树
+     */
+    initTree() {
+      let _this = this;
+      let setting = {
+        check: {
+          enable: true
+        },
+        data: {
+          simpleData: {
+            idKey: "id",
+            pIdKey: "parent",
+            rootPId: "",
+            enable: true
+          }
+        }
+      };
+
+      _this.zTree = $.fn.zTree.init($("#tree"), setting, _this.resources);
+      _this.zTree.expandAll(true);
+    },
   }
+}
 </script>
