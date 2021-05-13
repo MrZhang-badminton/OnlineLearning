@@ -197,8 +197,7 @@ export default {
           }
           _this.$router.push("/welcome");
         } else {
-          let s = sessionStorage.getItem("keykey");
-          console.log(s);
+
           Toast.warning(resp.message);
           _this.user.password = "";
           _this.loadImageCode();
