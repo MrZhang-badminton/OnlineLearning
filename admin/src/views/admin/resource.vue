@@ -13,7 +13,7 @@
                   rows="10"></textarea>
 
         <br>
-        <button id="save-btn" type="button" class="btn btn-primary" v-on:click="save()">
+        <button id="save-btn" type="button" class="btn btn-white btn-default btn-round" v-on:click="save()">
           保存
         </button>
       </div>
@@ -21,137 +21,117 @@
         <ul id="tree" class="ztree"></ul>
       </div>
     </div>
-    <pagination ref="pagination" v-bind:list="list"></pagination>
-    <table id="simple-table" class="table  table-bordered table-hover">
-      <thead>
-      <tr>
-        <th>id</th>
-        <th>名称</th>
-        <th>页面</th>
-        <th>请求</th>
-        <th>父id</th>
-        <th>操作</th>
-      </tr>
-      </thead>
-
-      <tbody>
-      <tr v-for="resource in resources">
-        <td>{{resource.id}}</td>
-        <td>{{resource.name}}</td>
-        <td>{{resource.page}}</td>
-        <td>{{resource.request}}</td>
-        <td>{{resource.parent}}</td>
-
-      <td>
-        <div class="hidden-sm hidden-xs btn-group">
-          <button v-on:click="edit(resource)" class="btn btn-xs btn-info">
-            <i class="ace-icon fa fa-pencil bigger-120"></i>
-          </button>
-          <button v-on:click="del(resource.id)" class="btn btn-xs btn-danger">
-            <i class="ace-icon fa fa-trash-o bigger-120"></i>
-          </button>
-        </div>
-      </td>
-      </tr>
-      </tbody>
-    </table>
 
   </div>
 </template>
 
 <script>
-  import Pagination from "@/components/pagination";
 
-  export default {
-    name: "system-resource",
-    components: {Pagination},
-    data: function () {
-      return {
-        resource: {},
-        resources: [],
-        resourceStr:"",
-      }
-    },
-    mounted: function () {
+export default {
+  name: "system-resource",
+  components: {},
+  data: function () {
+    return {
+      resource: {},
+      resources: [],
+      resourceStr: "",
+      tree: {},
+    }
+
+  },
+  mounted: function () {
+    let _this = this;
+
+    _this.list();
+    // sidebar激活样式方法一
+    // this.$parent.activeSidebar("system-resource-sidebar")
+  },
+  methods: {
+
+    /**
+     * 列表查询
+     * @param page
+     */
+    list() {
       let _this = this;
-      //初试设置每一页大小
-      this.$refs.pagination.size = 5;
-      //初试展示第一页
-      _this.list(1);
-      // sidebar激活样式方法一
-      // this.$parent.activeSidebar("system-resource-sidebar")
+      Loading.show();
+      _this.$ajax.get(process.env.VUE_APP_SERVER + '/system/admin/resource/load-tree').then((res) => {
+        Loading.hide();
+        let response = res.data;
+        _this.resources = response.content;
+        // 初始化树
+        _this.initTree();
+      })
     },
-    methods: {
 
-      /**
-       * 列表查询
-       * @param page
-       */
-      list(page) {
-        let _this = this;
-        Loading.show();
-        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/resource/list', {
-          page: page,
-          size: _this.$refs.pagination.size,
-        }).then((response) => {
-          Loading.hide();
-          // console.log("查询资源列表结果：", response);
-          let resp = response.data;
-          _this.resources = resp.content.list;
-          _this.$refs.pagination.render(page, resp.content.total);
-        })
-      },
+    /**
+     * 点击【保存】
+     * @param page
+     */
+    save() {
+      let _this = this;
 
-      /**
-       * 点击【保存】
-       * @param page
-       */
-      save() {
-        let _this = this;
+      // 保存校验
+      if (Tool.isEmpty(_this.resourceStr)) {
+        Toast.warning("资源不能为空！");
+        return;
+      }
 
-        // 保存校验
-        if(Tool.isEmpty(_this.resourceStr)){
-          Toast.warning("资源不能为空！");
-          return;
+      let json = JSON.parse(_this.resourceStr);
+
+      Loading.show();
+      _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/resource/save', json).then((response) => {
+        Loading.hide();
+        // console.log("保存资源列表结果：", response);
+        let resp = response.data;
+        if (resp.success) {
+          $("#form-modal").modal("hide");
+          _this.list(1);
+          Toast.success("保存成功!");
+        } else {
+          Toast.warning(resp.message);
         }
+      })
+    },
 
-        let json = JSON.parse(_this.resourceStr);
-
+    /**
+     * 点击删除
+     * @param id
+     */
+    del(id) {
+      let _this = this;
+      Confirm.show("删除资源后不可恢复，确认删除？", function () {
         Loading.show();
-        _this.$ajax.post(process.env.VUE_APP_SERVER + '/system/admin/resource/save', json).then((response) => {
+        _this.$ajax.delete(process.env.VUE_APP_SERVER + '/system/admin/resource/delete/' + id).then((response) => {
           Loading.hide();
-          // console.log("保存资源列表结果：", response);
+          // console.log("删除资源列表结果：", response);
           let resp = response.data;
           if (resp.success) {
-            $("#form-modal").modal("hide");
             _this.list(1);
-            Toast.success("保存成功!");
-          }else {
-            Toast.warning(resp.message);
+            Toast.success("删除成功!");
           }
         })
-      },
+      });
+    },
+    /**
+     * 初始资源树
+     */
+    initTree() {
+      let _this = this;
+      let setting = {
+        data: {
+          simpleData: {
+            idKey: "id",
+            pIdKey: "parent",
+            rootPId: "",
+            // enable: true
+          }
+        }
+      };
 
-      /**
-       * 点击删除
-       * @param id
-       */
-      del(id) {
-        let _this = this;
-        Confirm.show("删除资源后不可恢复，确认删除？", function () {
-          Loading.show();
-          _this.$ajax.delete(process.env.VUE_APP_SERVER + '/system/admin/resource/delete/' + id).then((response) => {
-            Loading.hide();
-            // console.log("删除资源列表结果：", response);
-            let resp = response.data;
-            if (resp.success) {
-              _this.list(1);
-              Toast.success("删除成功!");
-            }
-          })
-        });
-
-      }
-    }
+      _this.zTree = $.fn.zTree.init($("#tree"), setting, _this.resources);
+      _this.zTree.expandAll(true);
+    },
   }
+}
 </script>
