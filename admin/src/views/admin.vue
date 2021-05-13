@@ -383,10 +383,10 @@
                 <b class="arrow"></b>
               </li>
 
-              <li class="">
-                <a href="">
+              <li class="" id="system-resource-sidebar">
+                <a href="/system/resource">
                   <i class="menu-icon fa fa-caret-right"></i>
-                  权限管理
+                  资源管理
                 </a>
 
                 <b class="arrow"></b>
