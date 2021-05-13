@@ -208,6 +208,17 @@ export default {
       _this.listUser();
       $("#form-modal").modal("show");
     },
+
+    /**
+     * 点击【用户】
+     */
+    editUser(role) {
+      let _this = this;
+      _this.role = $.extend({}, role);
+      _this.listUser();
+      $("#user-modal").modal("show");
+    },
+
     /**
      * 查询所有用户
      */
