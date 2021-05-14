@@ -2,10 +2,7 @@ package com.course.system.controller.admin;
 
 import com.alibaba.fastjson.JSON;
 import com.course.server.domain.Constants;
-import com.course.server.dto.LoginUserDto;
-import com.course.server.dto.PageDto;
-import com.course.server.dto.ResponseDto;
-import com.course.server.dto.UserDto;
+import com.course.server.dto.*;
 import com.course.server.service.UserService;
 import com.course.server.util.UuidUtil;
 import com.course.server.util.ValidatorUtil;
@@ -144,7 +141,10 @@ public class UserController {
 	public ResponseDto logout(@PathVariable String token) {
 		ResponseDto responseDto = new ResponseDto();
 		redisTemplate.delete(token);
-		LOG.info("从redis中删除token:{}",token);
+		LOG.info("从redis中删除token:{}", token);
 		return responseDto;
 	}
+
+
+
 }
